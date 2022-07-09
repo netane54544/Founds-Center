@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Founds_Center</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="certificate.png" />
+    <None Remove="folders.png" />
+    <None Remove="info.png" />
+    <None Remove="log-out.png" />
+    <None Remove="matrix.png" />
+    <None Remove="maximize.png" />
+    <None Remove="minimize.png" />
+    <None Remove="multiply.png" />
+    <None Remove="paper.png" />
+    <None Remove="profile.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="certificate.png" />
+    <Resource Include="folders.png" />
+    <Resource Include="info.png" />
+    <Resource Include="log-out.png" />
+    <Resource Include="matrix.png" />
+    <Resource Include="maximize.png" />
+    <Resource Include="minimize.png" />
+    <Resource Include="multiply.png" />
+    <Resource Include="paper.png" />
+    <Resource Include="profile.png" />
+  </ItemGroup>
+
+</Project>
