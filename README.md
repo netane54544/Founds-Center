@@ -12,4 +12,5 @@ To do:
 6. Add permissions for users and admin functionality
 7. Add excel export option for data
 8. Connect the data(cloud\sql) to the software
+
 More will be added later..
