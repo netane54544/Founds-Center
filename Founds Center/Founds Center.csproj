@@ -8,29 +8,37 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="certificate.png" />
-    <None Remove="folders.png" />
-    <None Remove="info.png" />
-    <None Remove="log-out.png" />
-    <None Remove="matrix.png" />
-    <None Remove="maximize.png" />
-    <None Remove="minimize.png" />
-    <None Remove="multiply.png" />
-    <None Remove="paper.png" />
-    <None Remove="profile.png" />
+    <None Remove="Icons\certificate.png" />
+    <None Remove="Icons\folders.png" />
+    <None Remove="Icons\info.png" />
+    <None Remove="Icons\log-out.png" />
+    <None Remove="Icons\matrix.png" />
+    <None Remove="Icons\maximize.png" />
+    <None Remove="Icons\minimize.png" />
+    <None Remove="Icons\multiply.png" />
+    <None Remove="Icons\paper.png" />
+    <None Remove="Icons\profile.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="certificate.png" />
-    <Resource Include="folders.png" />
-    <Resource Include="info.png" />
-    <Resource Include="log-out.png" />
-    <Resource Include="matrix.png" />
-    <Resource Include="maximize.png" />
-    <Resource Include="minimize.png" />
-    <Resource Include="multiply.png" />
-    <Resource Include="paper.png" />
-    <Resource Include="profile.png" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\certificate.png" />
+    <Resource Include="Icons\folders.png" />
+    <Resource Include="Icons\info.png" />
+    <Resource Include="Icons\log-out.png" />
+    <Resource Include="Icons\matrix.png" />
+    <Resource Include="Icons\maximize.png" />
+    <Resource Include="Icons\minimize.png" />
+    <Resource Include="Icons\multiply.png" />
+    <Resource Include="Icons\paper.png" />
+    <Resource Include="Icons\profile.png" />
   </ItemGroup>
 
 </Project>

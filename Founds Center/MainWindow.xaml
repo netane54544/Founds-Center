@@ -5,44 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Founds_Center"
         mc:Ignorable="d"
-        x:Name="window" Title="Founds Center" MinHeight="480" MinWidth="800" Width="800" Height="480" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" VerticalAlignment="Top" ResizeMode="CanResizeWithGrip" MouseDown="Window_MouseDown">
+        x:Name="window" Title="Founds Center" MinHeight="480" MinWidth="800" Width="800" Height="480" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" VerticalAlignment="Top" ResizeMode="CanResizeWithGrip" MouseDown="Window_MouseDown" Loaded="Window_Loaded">
     <Grid x:Name="grid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="186"/>
+            <ColumnDefinition Width="*" MinWidth="200"/>
             <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*" MinWidth="80" />
+            <ColumnDefinition Width="*" MinWidth="100"/>
         </Grid.ColumnDefinitions>
         <Rectangle x:Name="dragBar" Grid.ColumnSpan="3" StrokeThickness="4" Width="Auto" Margin="0,0,0,423" Fill="#FFFF3333" Height="30" VerticalAlignment="Top" Panel.ZIndex="1"/>
         <ScrollViewer x:Name="fileView" Margin="0,30,0,0" Panel.ZIndex="1" Width="auto" Height="auto" Grid.ColumnSpan="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
             <StackPanel Grid.ColumnSpan="3" Width="auto" Height="auto" Background="White">
                 <Expander x:Name="tMExpander" Background="#FF3EC9FD" IsExpanded="True" Header="Transaction Manager" Foreground="White" FontFamily="Lucida Console" FontSize="14">
                     <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/paper.png"/>
+                        <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut" MouseLeftButtonDown="AddBtnClicked">
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\paper.png"/>
                             <TextBlock Text="  Create New Transaction" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/paper.png"/>
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\paper.png"/>
                             <TextBlock Text="  Delete Transaction" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/folders.png"/>
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\folders.png"/>
                             <TextBlock Text="  View Transactions" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/certificate.png"/>
-                            <TextBlock Text="  View Founds Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                     </StackPanel>
                 </Expander>
                 <Expander x:Name="adminPanel" Background="#FF3EC9FD" IsExpanded="True" Header="Admin Control Panel" Foreground="White" FontFamily="Lucida Console" FontSize="14">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/paper.png"/>
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\paper.png"/>
                             <TextBlock Text="  Create New User" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/profile.png" />
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\profile.png" />
                             <TextBlock Text="  User Manager" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                     </StackPanel>
@@ -50,35 +46,34 @@
                 <Expander Background="#FF3EC9FD" IsExpanded="True" Header="Application" Foreground="White" FontFamily="Lucida Console" FontSize="14">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/info.png" />
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\info.png" />
                             <TextBlock Text="  Help" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/profile.png" />
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\profile.png" />
                             <TextBlock Text="  My User" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut" MouseLeftButtonDown="xImage_MouseLeftButtonDown">
-                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/log-out.png"  />
+                        <StackPanel Orientation="Horizontal" MouseEnter="MouseIn" MouseLeave="MouseOut" MouseLeftButtonDown="XImage_MouseLeftButtonDown">
+                            <Image Width="80" Height="80" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\log-out.png"  />
                             <TextBlock Text="  Log Out" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Lucida Console" FontSize="36" Foreground="White"/>
                         </StackPanel>
                     </StackPanel>
                 </Expander>
             </StackPanel>
         </ScrollViewer>
-        <ListView x:Name="transactions" Grid.Column="0" Margin="0,29,0,0" FontFamily="Cambria Math" BorderBrush="{x:Null}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Found Center" DisplayMemberBinding="{Binding center}" Width="90"/>
-                    <GridViewColumn Header="Sum" DisplayMemberBinding="{Binding sum}" Width="50"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Image x:Name="menuBtn" HorizontalAlignment="Left" VerticalAlignment="Top" Source="/matrix.png" Height="23" Width="26" Panel.ZIndex="2" Margin="2,2,0,0" MouseLeftButtonDown="menuBtn_MouseLeftButtonDown">
-            <Image.Effect>
-                <DropShadowEffect ShadowDepth="3"/>
-            </Image.Effect>
-        </Image>
-        <TextBlock x:Name="titleText" Text="{Binding Title, ElementName=window}" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="2" Margin="31,5,0,0" FontFamily="Lucida Console" FontSize="18" FontWeight="Bold" FontStyle="Normal" Foreground="White"/>
+        <ScrollViewer Grid.Column="0" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Width="Auto" Height="Auto">
+            <ListView x:Name="transactions" FontFamily="Cambria Math" BorderBrush="{x:Null}" Width="Auto" Height="Auto" HorizontalAlignment="Stretch">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Center" DisplayMemberBinding="{Binding center}" Width="90"/>
+                        <GridViewColumn Header="Text" DisplayMemberBinding="{Binding text}" Width="Auto"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
+        <Image x:Name="menuBtn" HorizontalAlignment="Left" VerticalAlignment="Top" Source="Icons\matrix.png" Height="42" Width="34" Panel.ZIndex="2" MouseLeftButtonDown="MenuBtn_MouseLeftButtonDown" Margin="-2,-2,0,0"/>
+
+        <TextBlock x:Name="titleText" Text="{Binding Title, ElementName=window}" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="2" Margin="39,7,0,0" FontFamily="Lucida Console" FontSize="18" FontWeight="Bold" FontStyle="Normal" Foreground="White"/>
         <GridSplitter x:Name="spl" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Background="#FFFF4949"/>
         <Polygon x:Name="rRect" Points="20,0 0,0, 20,20" Grid.Column="2" Panel.ZIndex="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Fill="#FFFF4949" RenderTransformOrigin="0.5,0.5">
             <Polygon.RenderTransform>
@@ -90,8 +85,25 @@
                 </TransformGroup>
             </Polygon.RenderTransform>
         </Polygon>
-        <Image x:Name="xImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,3,0" VerticalAlignment="Top" Width="20" Source="/multiply.png" Panel.ZIndex="2" MouseLeftButtonDown="xImage_MouseLeftButtonDown"/>
-        <Image x:Name="mImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,28,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="/maximize.png" MouseLeftButtonDown="mImage_MouseLeftButtonDown"/>
-        <Image x:Name="zImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,55,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="/minimize.png" MouseLeftButtonDown="zImage_MouseLeftButtonDown"/>
+        <Image x:Name="xImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,3,0" VerticalAlignment="Top" Width="20" Source="Icons\multiply.png" Panel.ZIndex="2" MouseLeftButtonDown="XImage_MouseLeftButtonDown"/>
+        <Image x:Name="mImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,28,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="Icons\maximize.png" MouseLeftButtonDown="MImage_MouseLeftButtonDown"/>
+        <Image x:Name="zImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,55,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="Icons\minimize.png" MouseLeftButtonDown="ZImage_MouseLeftButtonDown"/>
+        <ScrollViewer x:Name="addTransaction" Width="Auto" Height="Auto" Grid.Column="2" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
+            <StackPanel x:Name="crTransaction" Height="Auto">
+                <StackPanel Height="26" Background="#FFF36B6B" VerticalAlignment="Stretch" Orientation="Horizontal">
+                    <Button x:Name="addTrSaveBtn" Height="27" Width="65" Content="Save" Background="#FFD8D0D0" Click="SaveBtnAddTr" IsEnabled="False"/>
+                    <Button x:Name="discardBtnAddTr" Height="27" Width="65" Content="Discard" Background="#FFD8D0D0" Click="DiscardBtnAdd" IsEnabled="False"/>
+                    <Button Height="27" Width="112" Content="Close Transaction" Background="#FFD8D0D0" Click="Close_Transation_Add"/>
+                </StackPanel>
+                <DataGrid x:Name="dataCTran" AutoGenerateColumns="False" IsReadOnly="False" Width="Auto" Height="Auto" BorderBrush="{x:Null}" CellEditEnding="dataCTran_CellEditEnding">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Found Center" Width="100" Binding="{Binding fcenter}"/>
+                        <DataGridTextColumn Header="Center" Width="60" Binding="{Binding center}"/>
+                        <DataGridTextColumn Header="Sum" Width="60" Binding="{Binding sum}"/>
+                        <DataGridTextColumn Header="Text" Width="120" Binding="{Binding text}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
