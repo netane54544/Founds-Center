@@ -124,9 +124,12 @@ namespace Founds_Center
         /// <returns>true if currect</returns>
         public bool IsFcenterCurrect()
         {
+            if (String.IsNullOrEmpty(fcenter) || CheckForLatter(fcenter))
+                return false;
+
             short year = Convert.ToInt16(fcenter.Substring(0, 4));
             short coin = Convert.ToInt16(fcenter.Substring(4, 1));
-            UsageFCenter fc = Find_FCenter(Convert.ToInt16(fcenter.Substring(5)));
+            UsageFCenter fc = Find_FCenter(Convert.ToInt16(fcenter[5..]));
 
             //Coin 0 - us dollars
             //Coin 1 - new shekels
@@ -134,5 +137,21 @@ namespace Founds_Center
             return (DateTime.Today.Year == year && (coin == 0 || coin == 1 || coin == 2) && fc != UsageFCenter.error);
         }
         
+        /// <summary>
+        /// Checks the string for latter
+        /// </summary>
+        /// <param name="s">The string you want to check</param>
+        /// <returns>true if latter found in the string</returns>
+        public static bool CheckForLatter(string s)
+        {
+            for (int i = 0; i < s.Length; i++)
+            {
+                if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z'))
+                    return true;
+            }
+
+            return false;
+        }
+
     }
 }

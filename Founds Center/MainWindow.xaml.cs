@@ -21,6 +21,7 @@ namespace Founds_Center
 
     enum Transaction
     {
+        error = -1,
         none = 0,
         add = 1,
         delete = 2,
@@ -30,7 +31,7 @@ namespace Founds_Center
     public partial class MainWindow : Window
     {
         //I will not upload my connection string
-        private const string connectionString = "";
+        private const string connectionString = "Server=tcp:founddata.database.windows.net,1433;Initial Catalog=foundcenters;Persist Security Info=False;User ID=netane54544;Password=22992299Ulsa;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         private bool isConnected = false;
         private bool isHidden = false;
         private bool maximized = false;
@@ -39,16 +40,34 @@ namespace Founds_Center
         private List<Items> items;
         private CenterData[] dataForTransactions;
         private Transaction currentTr = Transaction.none;
-        
+        private Items[] deleteData;
+        private int[] deleteIndex;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private Transaction UsageCurrentTr(int cr)
+        {
+            Transaction transaction;
+
+            try
+            {
+                transaction = (Transaction)Enum.Parse(typeof(Transaction), cr.ToString());
+            }
+            catch (Exception)
+            {
+                transaction = Transaction.error;
+            }
+
+            return transaction;
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Handeles the connection logic outside the UI thread
-            Thread thread = new Thread(() =>
+            Thread thread = new(() =>
             {
                 bool wait = true;
 
@@ -57,10 +76,27 @@ namespace Founds_Center
                     wait = ConnectToSql();
                 }
 
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    transactions.ItemsSource = dataForTransactions;
-                });
+                    Dispatcher.Invoke(() =>
+                    {
+                        transactions.ItemsSource = dataForTransactions;
+                        dataForTransactions.ToList().ForEach(x => dtTrCenter.Items.Add(x.center));
+
+                        if (currentTr == Transaction.add)
+                        {
+                            addTransaction.Visibility = Visibility.Visible;
+                        }
+                        else if (currentTr == Transaction.delete)
+                        {
+                            deleteTransaction.Visibility = Visibility.Visible;
+                        }
+                    });
+                }
+                catch (Exception)
+                {
+                    //Do nothing
+                }
             });
 
             thread.Start();
@@ -74,6 +110,9 @@ namespace Founds_Center
             }
 
             dataCTran.ItemsSource = items;
+
+            Transaction t = UsageCurrentTr(MySettings.Default.CurrentTransaction);
+            currentTr = (t == Transaction.error) ? Transaction.none : t;
         }
 
         //The first connection to retrive data from database
@@ -121,6 +160,12 @@ namespace Founds_Center
             return false;
         }
 
+        private void OnClose(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MySettings.Default.CurrentTransaction = (int)currentTr;
+            MySettings.Default.Save();
+        }
+
         private void XImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => Application.Current.Shutdown();
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -151,17 +196,36 @@ namespace Founds_Center
         //Handles the logic of showing the menu
         private void MenuBtn_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            ShowHideMenu();
+        }
+
+        private void ShowHideMenu()
+        {
             //Checks if the menu is hidden
             if (isHidden == false)
             {
+                //Menu is shown
                 isHidden = true;
 
                 transactions.Visibility = Visibility.Hidden;
                 spl.Visibility = Visibility.Hidden;
                 fileView.Visibility = Visibility.Visible;
+
+                if (currentTr == Transaction.add)
+                {
+                    addTransactionButton.IsEnabled = false;
+                    addTransactionText.Foreground = Brushes.Gray;
+                }
+                else
+                {
+                    //Return to defualt state if the transaction screen is empty
+                    addTransactionButton.IsEnabled = true;
+                    addTransactionText.Foreground = Brushes.White;
+                }
             }
             else
             {
+                //Menu hidden
                 isHidden = false;
                 transactions.Visibility = Visibility.Visible;
                 spl.Visibility = Visibility.Visible;
@@ -206,10 +270,12 @@ namespace Founds_Center
             if (!isConnected)
             {
                 MessageBox.Show("Please check your internet connection or contact the adminastrator to check the server state", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             addTransaction.Visibility = Visibility.Visible;
             currentTr = Transaction.add;
+            ShowHideMenu();
         }
 
         private void DiscardBtnAdd(object sender, RoutedEventArgs e)
@@ -243,17 +309,17 @@ namespace Founds_Center
                 {
                     if (!f)
                     {
-                        MessageBox.Show("One of the founds are not currect", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("One of the founds are not correct", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     if (!fc)
                     {
-                        MessageBox.Show("One of the found centers are not currect", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("One of the found centers are not correct", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     if (!cSum)
                     {
-                        MessageBox.Show("One of the founds are not currect", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("One of the founds are not correct", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
                     }
 
                     return;
@@ -263,7 +329,7 @@ namespace Founds_Center
             Thread thread = new(() => 
             {
                 SqlConnection conn = new(connectionString);
-                string sqlCommand = "INSERT INTO Data(Found_Center, Center, Sum, Text) VALUES(@FC, @C, @S, @T)";
+                string sqlCommand = "INSERT INTO TransactionData(Found_Center, Center, Sum, Text) VALUES(@FC, @C, @S, @T)";
 
                 //Thread safety
                 lock (conn)
@@ -292,25 +358,281 @@ namespace Founds_Center
                     conn.Close();
                 }
 
-                Dispatcher.Invoke(() =>
+                try
                 {
-                    addTrSaveBtn.IsEnabled = false;
+                    Dispatcher.Invoke(() =>
+                    {
+                        addTrSaveBtn.IsEnabled = false;
 
-                    //Clean the table and disable the button
-                    dataCTran.ItemsSource = null;
-                    items.ForEach(x => x.Clean());
-                    dataCTran.ItemsSource = items;
-                    discardBtnAddTr.IsEnabled = false;
-                });
+                        //Clean the table and disable the button
+                        dataCTran.ItemsSource = null;
+                        items.ForEach(x => x.Clean());
+                        dataCTran.ItemsSource = items;
+                        discardBtnAddTr.IsEnabled = false;
+                    });
+                }
+                catch (Exception)
+                {
+                    //Do nothing
+                }
             });
 
             thread.Start();
         }
 
-        private void dataCTran_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void DataCTran_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             addTrSaveBtn.IsEnabled = true;
             discardBtnAddTr.IsEnabled = true;
+        }
+
+        private void SearchTrSaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Thread thread = new(() => { ConnectToData(); });
+            thread.Start();
+        }
+
+        private void ConnectToData()
+        {
+            string sqlCommand = "Select Found_Center, Center, Sum, Text from TransactionData";
+
+            SqlConnection conn = new(connectionString);
+            List<Items> tempData = new();
+
+            //Thread safety
+            lock (conn)
+            {
+                try
+                {
+                    conn.Open();
+                }
+                catch (Exception)
+                {
+                    //Return error
+                    MessageBox.Show("Error can't connect to the server", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                SqlCommand cmd = new(sqlCommand, conn);
+                SqlDataReader dataReader = cmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    string fcenter = dataReader.GetString(0);
+                    string center = dataReader.GetString(1);
+                    double sum = dataReader.GetDouble(2);
+                    string text = dataReader.GetString(3);
+
+                    tempData.Add(new Items(fcenter, Convert.ToInt32(center), Convert.ToInt32(sum), text));
+                }
+
+                conn.Close();
+
+                Dispatcher.Invoke(() =>
+                {
+                    //Note: add to the list the data
+                    if (!String.IsNullOrEmpty(dtTrCenter.Text))
+                    {
+                        for (int i = 0; i < tempData.Count; i++)
+                        {
+                            Items items = tempData[i];
+
+                            if (!items.center.ToString().Equals(dtTrCenter.Text))
+                            {
+                                tempData.RemoveAt(i);
+                            }
+                        }
+
+                        //Slow
+                        //tempData = tempData.Where(x => x.center == Convert.ToInt32(dtTrCenter.Text)).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(dtTrCoin.Text))
+                    {
+                        //found centers must be of type xxxx0/1/2x...x
+                        //so the coin will always be in the 4 index
+
+                        for (int i = 0; i < tempData.Count; i++)
+                        {
+                            Items items = tempData[i];
+
+                            if (!items.fcenter[4].ToString().Equals(dtTrCoin.Text))
+                            {
+                                tempData.RemoveAt(i);
+                            }
+                        }
+
+                        //Slow
+                        //tempData = tempData.Where(x => Convert.ToInt32(x.fcenter[4].ToString()) == Convert.ToInt32(dtTrCoin.Text)).ToList();
+                    }
+
+                    if (!String.IsNullOrEmpty(dtTrFoundCenter.Text))
+                    {
+                        //the coin is on the 4 index so after that
+
+                        for (int i = 0; i < tempData.Count; i++)
+                        {
+                            Items items = tempData[i];
+
+                            if (!items.fcenter.Trim()[5..].ToString().Equals(dtTrFoundCenter.Text[^1].ToString()))
+                            {
+                                tempData.RemoveAt(i);
+                            }
+                        }
+
+                        //Slow
+                        //tempData = tempData.Where(x => Convert.ToInt32((x.fcenter.Trim().Substring(5))) == Convert.ToInt32(((dtTrFoundCenter.Text[dtTrFoundCenter.Text.Length - 1]).ToString()))).ToList();
+                    }
+                });
+            }
+
+            deleteData = tempData.ToArray();
+
+            Dispatcher.Invoke(() => 
+            {
+                dataDTran.ItemsSource = null;
+                dataDTran.ItemsSource = deleteData;
+            });
+        }
+
+        private void DeleteTrClearBtn(object sender, RoutedEventArgs e)
+        {
+            dataDTran.ItemsSource = null;
+            deleteTrSaveBtn.IsEnabled = false;
+            dtTrFoundCenter.Text = "";
+            dtTrCoin.Text = "";
+            dtTrCenter.Text = "";
+        }
+
+        private void DataDTran_CurrentCellChanged(object sender, EventArgs e)
+        {
+            DataGridCellInfo cell = dataDTran.CurrentCell;
+            var selectedIndexes = new List<int>();
+            //int tempIndex = dataDTran.Items.IndexOf(cell.Item);
+
+            foreach (var selItem in dataDTran.SelectedItems)
+            {
+                selectedIndexes.Add(dataDTran.Items.IndexOf(selItem));
+            }
+
+            if (HasNull(selectedIndexes) || IsDifferent(deleteIndex.ToList(), selectedIndexes))
+            {
+                deleteIndex = new int[selectedIndexes.Count];
+
+                for (int i = 0; i < deleteIndex.Length; i++)
+                {
+                    deleteIndex[i] = selectedIndexes[i];
+                }
+            }
+
+            deleteTrSaveBtn.IsEnabled = true;
+        }
+
+        private bool HasNull(List<int> items)
+        {
+            return items.Contains(-1) || deleteIndex is null;
+        }
+
+        private bool IsDifferent(List<int> items1, List<int> items2)
+        {
+            //The length of the lists will be the same because of the last condition
+            int count = items1.Count;
+
+            if (count != items2.Count)
+                return true;
+
+            for (int i = 0; i < items1.Count; i++)
+            {
+                if (items1[i] != items2[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void DeleteTrSaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            deleteTrSaveBtn.IsEnabled = false;
+
+            Thread thread = new(() => { ConnectToDelete(); });
+            thread.Start();
+        }
+
+        private void ConnectToDelete()
+        {
+            string sqlCommand = "DELETE FROM TransactionData WHERE Found_Center=@fc And Center=@c And Sum=@s And Text=@t";
+            SqlConnection conn = new(connectionString);
+
+            //Thread safety
+            lock (conn)
+            {
+                try
+                {
+                    conn.Open();
+                }
+                catch (Exception)
+                {
+                    //Return error
+                    MessageBox.Show("Error can't connect to the server", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                for (int i = 0; i < deleteIndex.Length; i++)
+                {
+                    SqlCommand cmd = new SqlCommand(sqlCommand, conn);
+                    List<Items> tempArray;
+
+                    cmd.Parameters.AddWithValue("@fc", deleteData[deleteIndex[i]].fcenter);
+                    cmd.Parameters.AddWithValue("@c", deleteData[deleteIndex[i]].center);
+                    cmd.Parameters.AddWithValue("@s", deleteData[deleteIndex[i]].sum);
+                    cmd.Parameters.AddWithValue("@t", deleteData[deleteIndex[i]].text);
+                    cmd.ExecuteNonQuery();
+
+                    //Copys the array so the items that can be deleted will be removed
+                    tempArray = deleteData.ToList();
+                    tempArray.RemoveAt(deleteIndex[i]);
+                    deleteData = new Items[tempArray.Count];
+
+                    for (int a = 0; a < deleteData.Length; a++)
+                    {
+                        deleteData[a] = tempArray[a];
+                    }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        dataDTran.ItemsSource = null;
+                        dataDTran.ItemsSource = deleteData;
+                    });
+                }
+
+                conn.Close();
+            }
+        }
+
+        private void Close_Transation_Delete(object sender, RoutedEventArgs e)
+        {
+            //Return to defualt
+            dataDTran.ItemsSource = null;
+            deleteTrSaveBtn.IsEnabled = false;
+            dtTrFoundCenter.Text = "";
+            dtTrCoin.Text = "";
+            dtTrCenter.Text = "";
+            deleteData = null;
+            deleteIndex = null;
+
+            deleteTransaction.Visibility = Visibility.Hidden;
+            currentTr = Transaction.none;
+        }
+
+        private void DeleteBtnClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (!isConnected)
+            {
+                MessageBox.Show("Please check your internet connection or contact the adminastrator to check the server state", window.Title, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            deleteTransaction.Visibility = Visibility.Visible;
+            currentTr = Transaction.delete;
+            ShowHideMenu();
         }
 
         /*
