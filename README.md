@@ -5,13 +5,8 @@ My name is Netanel, this is a personal project for fun, I made it public so peop
 
 To do:
 1. Improve UI functions.
-2. Add the panel for the finance options
-3. Connet the project to sql or cloud - done!
-4. Look into more transaction to add
-5. Add login window and sql database for users
-6. Add permissions for users and admin functionality
-7. Add excel export option for data
-8. Connect the data(cloud\sql) to the software - in progress, the add transaction is connected.
-9. Add the ability to remember actions done in the software (local).
+2. Add login window and sql database for users
+3. Add permissions for users and admin functionality
+4. Add excel export option for data
 
 More will be added later..
