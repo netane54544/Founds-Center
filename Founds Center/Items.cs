@@ -34,10 +34,7 @@ namespace Founds_Center
         public int sum { get; set; }
         public string text { get; set; }
 
-        public Items()
-        {
-
-        }
+        public Items() { }
 
         public Items(string fcenter, int center, int sum, string text)
         {
@@ -59,10 +56,7 @@ namespace Founds_Center
         /// Checks if the grid item is empty
         /// </summary>
         /// <returns>true if the item is empty</returns>
-        public bool IsEmpty()
-        {
-            return (String.IsNullOrEmpty(fcenter) && center == 0 && sum == 0 && String.IsNullOrEmpty(text));
-        }
+        public bool IsEmpty() => (String.IsNullOrEmpty(fcenter) && center == 0 && sum == 0 && String.IsNullOrEmpty(text));
 
         //O(logn) - binary search
         /// <summary>

@@ -89,7 +89,7 @@
         <Image x:Name="mImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,28,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="Icons\maximize.png" MouseLeftButtonDown="MImage_MouseLeftButtonDown"/>
         <Image x:Name="zImage" Grid.Column="2" HorizontalAlignment="Right" Height="22" Margin="0,5,55,0" VerticalAlignment="Top" Width="20" Panel.ZIndex="2" Source="Icons\minimize.png" MouseLeftButtonDown="ZImage_MouseLeftButtonDown"/>
         <ScrollViewer x:Name="addTransaction" Width="Auto" Height="Auto" Grid.Column="2" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
-            <StackPanel x:Name="crTransaction" Height="Auto">
+            <StackPanel Height="Auto">
                 <StackPanel Height="26" Background="#FFF36B6B" VerticalAlignment="Stretch" Orientation="Horizontal">
                     <Button x:Name="addTrSaveBtn" Height="27" Width="65" Content="Save" Background="#FFD8D0D0" Click="SaveBtnAddTr" IsEnabled="False"/>
                     <Button x:Name="discardBtnAddTr" Height="27" Width="65" Content="Discard" Background="#FFD8D0D0" Click="DiscardBtnAdd" IsEnabled="False"/>
@@ -106,9 +106,9 @@
             </StackPanel>
         </ScrollViewer>
         <ScrollViewer x:Name="deleteTransaction" Width="Auto" Height="Auto" Grid.Column="2" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
-            <StackPanel x:Name="dtTransaction" Height="Auto">
+            <StackPanel Height="Auto">
                 <StackPanel Height="26" Background="#FFF36B6B" VerticalAlignment="Stretch" Orientation="Horizontal">
-                    <Button x:Name="searchTrSaveBtn" Height="27" Width="120" Content="Search Transactions" Background="#FFD8D0D0" Click="SearchTrSaveBtn_Click"/>
+                    <Button x:Name="searchTrSaveBtn" Height="27" Width="120" Content="Search Transactions" Background="#FFD8D0D0" Click="SearchTrDBtn_Click"/>
                     <Button x:Name="deleteTrSaveBtn" Height="27" Width="120" Content="Delete Transactions" Background="#FFD8D0D0" IsEnabled="False" Click="DeleteTrSaveBtn_Click"/>
                     <Button x:Name="cButtonDTR" Height="27" Width="53" Content="Clear" Background="#FFD8D0D0" Click="DeleteTrClearBtn"/>
                     <Button Height="27" Width="112" Content="Close Transaction" Background="#FFD8D0D0" Click="Close_Transation_Delete"/>
@@ -146,6 +146,55 @@
                     </ComboBox>
                 </StackPanel>
                 <DataGrid x:Name="dataDTran" AutoGenerateColumns="False" IsReadOnly="True" Width="Auto" Height="Auto" BorderBrush="{x:Null}" CurrentCellChanged="DataDTran_CurrentCellChanged" SelectionMode="Extended" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Found Center" Width="100" Binding="{Binding fcenter}"/>
+                        <DataGridTextColumn Header="Center" Width="60" Binding="{Binding center}"/>
+                        <DataGridTextColumn Header="Sum" Width="60" Binding="{Binding sum}"/>
+                        <DataGridTextColumn Header="Text" Width="120" Binding="{Binding text}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </ScrollViewer>
+        <ScrollViewer x:Name="viewTransaction" Width="Auto" Height="Auto" Grid.Column="2" Margin="0,30,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
+            <StackPanel Height="Auto">
+                <StackPanel Height="26" Background="#FFF36B6B" VerticalAlignment="Stretch" Orientation="Horizontal">
+                    <Button x:Name="searchTrViewBtn" Height="27" Width="120" Content="Search Transactions" Background="#FFD8D0D0" Click="SearchTrViewBtn_Click"/>
+                    <Button Height="27" Width="57" Content="Export" Background="#FFD8D0D0" Click="Export_ViewTR"/>
+                    <Button Height="27" Width="112" Content="Close Transaction" Background="#FFD8D0D0" Click="Close_Transation_View"/>
+                </StackPanel>
+                <StackPanel Height="26" Background="#FFF36B6B" VerticalAlignment="Stretch" Orientation="Horizontal">
+                    <TextBlock Text=" " Height="19"/>
+                    <TextBlock Text="Center: " Height="19" Foreground="White"/>
+                    <ComboBox x:Name="vTrCenter" Width="70" Foreground="Black"/>
+                    <TextBlock Text="    " Height="19"/>
+                    <TextBlock Text="Coin: " Height="19" Foreground="White"/>
+                    <ComboBox x:Name="vTrCoin" Width="48">
+                        <ComboBoxItem Content="0"/>
+                        <ComboBoxItem Content="1"/>
+                        <ComboBoxItem Content="2"/>
+                    </ComboBox>
+                    <TextBlock Text="    " Height="19"/>
+                    <TextBlock Text="Found Type: " Height="19" Foreground="White"/>
+                    <ComboBox x:Name="vTrFoundCenter" Width="115">
+                        <ComboBoxItem Content="software - 0"/>
+                        <ComboBoxItem Content="electricity - 1"/>
+                        <ComboBoxItem Content="hardware - 2"/>
+                        <ComboBoxItem Content="furniture - 3"/>
+                        <ComboBoxItem Content="fuel - 4"/>
+                        <ComboBoxItem Content="maintenance - 5"/>
+                        <ComboBoxItem Content="business deals - 6"/>
+                        <ComboBoxItem Content="construction - 7"/>
+                        <ComboBoxItem Content="utensils - 8"/>
+                        <ComboBoxItem Content="office - 9"/>
+                        <ComboBoxItem Content="food - 10"/>
+                        <ComboBoxItem Content="operation costs - 11"/>
+                        <ComboBoxItem Content="taxes - 12"/>
+                        <ComboBoxItem Content="vehicles - 13"/>
+                        <ComboBoxItem Content="grants - 14"/>
+                        <ComboBoxItem Content="other - 15"/>
+                    </ComboBox>
+                </StackPanel>
+                <DataGrid x:Name="dataVTran" AutoGenerateColumns="False" IsReadOnly="True" Width="Auto" Height="Auto" BorderBrush="{x:Null}" CurrentCellChanged="DataDTran_CurrentCellChanged" SelectionMode="Extended" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Found Center" Width="100" Binding="{Binding fcenter}"/>
                         <DataGridTextColumn Header="Center" Width="60" Binding="{Binding center}"/>
